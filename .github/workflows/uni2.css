@@ -1,0 +1,1263 @@
+:root {
+    --primary: #2F7076;
+    --primary-dark: #1e4e52;
+    --accent: #2F7076; 
+    --bg: #f0f2f5;
+    --white: #ffffff;
+    --panel-bg: rgba(47, 112, 118, 0.95);
+    --teal: #BBD9C6; 
+    --gold: #FFD700;
+    --bezier: cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-duration: 0.8s;
+    --search-bg :#2F7076BF;
+    --robot-bg: #A5D6A7;
+    --glass-hue-start: rgba(0, 255, 255, 0.15); 
+    --glass-hue-end: rgba(0, 128, 128, 0.05); 
+    --glass-border-color: rgba(0, 128, 128, 0.3);
+    --glass-shadow: rgba(0, 0, 0, 0.3);
+    --blur-intensity: 10px; 
+
+}
+/* 🌙 DARK THEME DEFINITION */
+.phone-frame.dark-theme {
+    /* Swap primary colors for the Calming Forest Green aesthetic */
+    --primary: #20332D;          /* Deep Moss Green (New Primary BG) */
+    --primary-dark: #17231E;     /* Dark Olive */
+    --accent: #DCD0C0;           /* Muted Cream (New Accent for highlights) */
+    
+    /* Swap backgrounds */
+    --bg: #20332D;               /* Deep Moss Green background */
+    --white: #17231E;            /* Internal backgrounds (e.g., location cards) */
+    
+    /* Panel and text accents */
+    --panel-bg: rgba(32, 51, 45, 0.95); /* Semi-transparent Moss */
+    --gold: #DCD0C0;             /* Use Muted Cream for all 'Gold'/'Active' roles */
+    --teal-light: #AE9486;       /* Soft Taupe for secondary/subtle text */
+
+    /* 🟢 CRITICAL FIX: Dark Mode Search Bar background */
+    --search-bg: rgba(52, 70, 65, 0.7);      /* Dark Green-Gray for search bar */
+    
+    /* Ensure primary text color is nearly white but soft */
+    color: #EBEBEB;
+/* 🌙 Dark Theme Glass Variables based on #344641 (RGB 52, 70, 65) */
+
+    /* ... existing dark theme variables ... */
+    
+    /* 🟢 NEW GLASS VARIABLES (Deep Green/Gray) */
+    --glass-hue-start: rgba(52, 70, 65, 0.45);  /* Base color, medium opacity */
+    --glass-hue-end: rgba(52, 70, 65, 0.2);      /* Base color, lower opacity for gradient end */
+    --glass-border-color: rgba(90, 120, 110, 0.5); /* Slightly brighter border for visibility */
+    --glass-shadow: rgba(0, 0, 0, 0.7);
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; -webkit-tap-highlight-color: transparent; user-select: none; color:#BBD9C6;}
+
+.concert-one-regular { font-family: "Concert One", sans-serif; font-weight: 400; }
+
+body {
+    background-color: #333;
+    display: flex; justify-content: center; align-items: center;
+    height: 100vh; font-family: 'Cairo', sans-serif; overflow: hidden;
+}
+
+/* --- CHASSIS --- */
+.phone-frame {
+    width: 380px; height: 800px; background: var(--bg);
+    border-radius: 45px; border: 10px solid #2d3436;
+    position: relative; overflow: hidden;
+    box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+}
+.notch {
+    position: absolute; top: 0; left: 50%; transform: translateX(-50%);
+    width: 150px; height: 28px; background: #2d3436;
+    border-bottom-left-radius: 18px; border-bottom-right-radius: 18px; z-index: 999;
+}
+.status-bar {
+    position: absolute; top: 10px; width: 100%; padding: 0 25px;
+    display: flex; justify-content: space-between;
+    font-size: 12px; font-weight: 700; color: #2d3436; z-index: 998;
+}
+.status-bar.white-text { color: rgba(255,255,255,0.8); }
+
+/* --- VIEWS --- */
+.view {
+    position: absolute; inset: 0;
+    transition: transform 0.6s var(--bezier);
+    background: var(--bg); display: flex; flex-direction: column;
+}
+.view.hidden-down { transform: translateY(100%); }
+.view.hidden-up { transform: translateY(-30%); opacity: 0; }
+
+/* --- HOME VIEW --- */
+#home-view { z-index: 10; background: white; }
+.hero-header {
+    flex: 1; background: var(--primary);
+    border-bottom-left-radius: 90px; border-bottom-right-radius: 90px;
+    display: flex; justify-content: center; align-items: center;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+    transition: all var(--transition-duration) var(--bezier);
+}
+.hero-header.chat-mode {
+    height: 100%;
+    flex: none;
+    border-radius: 0;
+    transform: translateY(-100px);
+}
+.pin-assembly { margin-top: 40px; }
+.pin-body { transform: none; }
+.pin-icon {
+    /* 🔴 REMOVE CIRCLE SHAPE */
+    border-radius: 0; 
+    
+    /* 🔴 REMOVE ROTATION */
+    transform: none; /* Counter-rotate the icon */
+    
+    /* 🔴 REMOVE BORDER */
+    border: none; 
+    
+    /* 🔴 MAKE BACKGROUND TRANSPARENT (if it was ever set) */
+    background: transparent; 
+    
+    /* Keep other display properties to center the image */
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    
+    /* Adjust size and color as needed (based on the logo image) */
+    font-size: 40px; 
+    color: var(--bg); 
+    overflow: hidden;
+}
+.custom-img-logo { width: 130%; height: 100%; object-fit: cover; }
+.home-content { padding: 20px 40px; text-align: center; }
+.app-title {font-weight: 400; font-family:Concert One; font-size: 60px; color: var(--primary-dark); margin-bottom: 5px; }
+.tagline {font-weight: 900; font-size: 18px; color: #547565; margin-bottom: 30px; font-weight: 900; }
+/* --- NEW CSS for .btn-main --- */
+.btn-main {
+    width: 100%; 
+    padding: 18px 25px;
+    border-radius: 25px; 
+    border: none;
+    font-family: 'Cairo', sans-serif; 
+    font-size: 18px; 
+    font-weight: 700;
+    display: flex; 
+    align-items: center; 
+    justify-content: center;
+    gap: 15px;
+    cursor: pointer; 
+    margin-bottom: 15px; 
+    transition: transform 0.2s;
+    position: relative; 
+    overflow: hidden; 
+}
+.btn-main:active { transform: scale(0.96); }
+.btn-teal { background: var(--primary); color: white; }
+.btn-gold { 
+    /* Base Gold/Amber Colors for Glass */
+    /* Light Theme (Gold shine) */
+    --gold-glass-start: rgba(255, 215, 0, 0.25);
+    --gold-glass-end: rgba(255, 190, 0, 0.05);
+    --gold-glass-border: rgba(255, 215, 0, 0.4);
+    
+    /* Dark Theme Override for Gold Glass (Muted Amber) */
+    .phone-frame.dark-theme & {
+        --gold-glass-start: rgba(255, 179, 0, 0.4);  
+        --gold-glass-end: rgba(255, 150, 0, 0.2);
+        --gold-glass-border: rgba(255, 215, 0, 0.6);
+    }
+
+    /* 🟢 APPLY GOLD GLASSMOPHISM */
+    background: linear-gradient(
+        135deg, 
+        var(--gold-glass-start), /* Use the new gold variables */
+        var(--gold-glass-end)
+    );
+    backdrop-filter: blur(var(--blur-intensity));
+    -webkit-backdrop-filter: blur(var(--blur-intensity));
+    
+    /* Use the gold border */
+    border: 1px solid var(--gold-glass-border); 
+    
+    /* Use the shared shadow variable for consistency */
+    box-shadow: 0 4px 15px 0 var(--glass-shadow); 
+    
+    /* Text color remains theme-aware and readable */
+    color: var(--primary-dark);
+    
+    /* Keep other general .btn-main styles (padding, margin, etc.) */
+}
+
+/* --- MAP VIEW --- */
+#map-view { z-index: 20; background: #e6e6e6; }
+#mapContainer { width: 100%; height: 100%; z-index: 1; }
+
+/* The Header Background Shape (Mimics Home Header) */
+.map-header-bg {
+    position: absolute; top: 0; left: 0; right: 0;
+    height: 120px;
+    background: var(--search-bg);
+    border-bottom-left-radius: 40px; border-bottom-right-radius: 40px;
+    z-index: 40;
+    box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+    .search-container {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+}
+
+/* Top Search Bar */
+.top-bar-container {
+    position: absolute; top: 50px; left: 0; right: 0;
+    z-index: 50; padding: 0 20px;
+}
+.top-search-bar {
+    background: white; height: 50px; border-radius: 25px;
+    display: flex; align-items: center; padding: 0 15px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+
+}
+
+/* --- ZOOM CONTROLS --- */
+.zoom-controls {
+    position: absolute;
+    bottom: 120px;
+    left: 20px;
+    z-index: 50;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.zoom-btn {
+    width: 45px;
+    height: 45px;
+    background: var(--primary-dark);
+    color: var(--primary);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.2);
+    font-size: 18px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, background 0.2s;
+}
+
+.zoom-btn:active {
+    transform: scale(0.9);
+    background: #f0f0f0;
+}
+.top-search-bar input {
+    flex: 1; border: none; outline: none; text-align: right;
+    font-family: 'Cairo'; font-size: 14px; padding: 0 10px; color: #333;
+}
+.menu-icon, .search-icon { color: #888; font-size: 18px; cursor: pointer; }
+
+/* === OVERLAYS === */
+.overlay-panel {
+    position: absolute; bottom: 0; left: 0; right: 0;
+    height: 75%;
+    background: var(--panel-bg);
+    border-top-left-radius: 40px; border-top-right-radius: 40px;
+    z-index: 45;
+    transform: translateY(110%);
+    transition: transform 0.5s var(--bezier);
+    /* Padding set to 0 to allow absolute children to use full width/height */
+    padding: 20px 0 0 0;
+    display: flex; flex-direction: column;
+    backdrop-filter: blur(5px);
+}
+.overlay-panel.open { transform: translateY(0); }
+.panel-handle {
+    width: 50px; height: 5px; background: rgba(255,255,255,0.3);
+    border-radius: 5px; margin: 0 auto 20px auto;
+}
+
+/* --- CRITICAL FIX FOR NESTED SETTINGS MENU --- */
+#settingsOverlay .panel-content {
+    flex: 1; 
+    overflow: hidden; /* Prevent parent scroll when children are absolute */
+    color: white; 
+    position: relative; /* CRITICAL: Establishes context for absolute children */
+}/* Ensure all overlay headers align correctly */
+
+
+/* Search Results / Favorites / Generic Panel Content */
+.panel-content { flex: 1; overflow-y: auto; color: white; padding: 0 20px; }
+.center-content { text-align: center; }
+
+/* --- CORE POSITION & TRANSITION FOR NESTED MENUS (LANGUAGE) --- */
+/* Ensure the settings list and language panel are correctly positioned */
+#settingsOverlay .panel-content > * {
+    transition: transform 0.3s ease-in-out, opacity 0.3s;
+    width: 100%;
+    height: 100%; /* IMPORTANT */
+    position: absolute;
+    top: 0;
+    left: auto;
+    right: 0; /* Anchor all children to the same starting point */
+    padding: 0 20px; /* Add padding here instead of on the parent */
+    box-sizing: border-box;
+    overflow-y: auto; 
+    background: var(--panel-bg); /* Ensure background prevents show-through */
+}
+
+/* 1. Class to move an element OUT to the right (Used for Language menu initially) */
+.hidden-right {
+    transform: translateX(100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* 2. Class to move an element OUT to the left (Used when the main list is hidden) */
+.hidden-left {
+    transform: translateX(-100%);
+    opacity: 0;
+    pointer-events: none;
+}
+
+/* Adjust the Language Options container style */
+.language-options-container li {
+    padding: 15px 10px;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 18px;
+    display: flex;
+    justify-content: space-between;
+    cursor: pointer;
+}
+
+/* Settings List */
+.settings-list { 
+    z-index: 3;
+    list-style: none; padding: 0; text-align: right; 
+    background: var(--panel-bg);
+}
+.settings-list li {
+    padding: 15px 10px; border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 20px; display: flex; justify-content: space-between; cursor: pointer;
+}
+
+/* Search Results */
+/* --- Search Results --- */
+.result-item {
+    /* 🟢 FIX 1: Use a slightly lighter background color than the main panel 
+       (we'll use a semi-transparent version of the primary background) 
+       This lifts the result item off the page, modernizing the look. */
+    background: rgba(var(--accent), 0.05); /* Very light accent background */
+    
+    padding: 18px; /* 🟢 FIX 2: Increased padding for a larger, cleaner touch target */
+    
+    border-radius: 15px; /* Keep this radius, but maybe increase slightly for a softer look */
+    
+    margin-bottom: 12px; /* 🟢 FIX 3: Increased margin for better separation */
+    cursor: pointer; 
+    
+    display: flex; 
+    justify-content: space-between; 
+    align-items: center;
+
+    /* 🟢 FIX 4: Add a subtle transition for the hover effect */
+    transition: background 0.2s ease-in-out, transform 0.1s ease-in-out; 
+}
+/* --- Hover Effect and Active State --- */
+.result-item:hover { 
+    /* 🟢 FIX 5: Highlight the item on hover using a stronger background */
+    background: rgba(var(--accent), 0.15); 
+}
+
+/* Optional: Add a subtle active effect (when pressed) */
+.result-item:active {
+    transform: scale(0.98);
+}/* Ensure the text inside the result item is the near-white color */
+.result-item, 
+.result-item:hover { background: rgba(255,255,255,0.2); }
+.empty-state { text-align: center; color: rgba(255,255,255,0.6); margin-top: 50px; }
+
+/* Favorites */
+.fav-item {
+    background: rgba(255,255,255,0.15); padding: 15px; border-radius: 20px;
+    display: flex; justify-content: space-between; align-items: center;
+    font-size: 18px; margin-bottom: 10px;
+}
+
+/* Close Orb */
+.close-orb-container { display: flex; justify-content: center; margin-bottom: 80px; }
+.close-orb {
+    width: 60px; height: 60px;  
+    border-radius: 50%; display: flex; justify-content: center; align-items: center;
+    color: var(--primary); font-size: 24px; cursor: pointer;
+    box-shadow: 0 10px 20px rgba(0,0,0,0.2);
+}
+
+/* === LOCATION CARD (New Design) === */
+.location-card {
+    position: absolute; top: 180px; left: 30px; right: 30px;
+    background: white; border-radius: 25px; overflow: hidden;
+    box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    transform: scale(0.9) translateY(20px); opacity: 0; pointer-events: none;
+    transition: 0.3s var(--bezier); z-index: 60;
+}
+.location-card.active { transform: scale(1) translateY(0); opacity: 1; pointer-events: auto; }
+
+.card-image-area {
+    height: 120px; background: #eee;
+    display: flex; justify-content: center; align-items: center;
+    color: #ccc; font-size: 40px;
+}
+.card-image-area img { width: 100%; height: 100%; object-fit: cover; }
+
+.card-body { padding: 20px; }
+.card-header { display: flex; justify-content: space-between; margin-bottom: 15px; }
+.card-title { font-weight: 800; color: var(--primary); font-size: 20px; }
+.card-meta { font-size: 14px; color: #777; margin-top: 5px;}
+.btn-fav-toggle { background: none; border: none; font-size: 24px; color: #ccc; cursor: pointer; }
+.btn-fav-toggle.is-fav { color: #FFD700; }
+.btn-navigate { width: 100%; background: var(--primary); color: white; border: none; padding: 12px; border-radius: 15px; font-weight: bold; cursor: pointer; }
+
+/* === BOTTOM NAV === */
+.bottom-nav-container {
+    position: absolute; bottom: 30px; left: 20px; right: 20px;
+    height: 70px; z-index: 50;
+    opacity: 1; /* Ensure default state is visible */
+    transform: translateY(0);
+    transition: opacity 0.3s, transform 0.3s;
+}
+/* --- 2. The Theme-Aware Green Glassy Navigation Background --- */
+
+.bottom-nav-bg {
+    position: absolute; 
+    inset: 0; 
+    
+    /* 🟢 Use Theme-Aware Custom Properties for Background and Border */
+    background: linear-gradient(
+        135deg, 
+        var(--glass-hue-start), 
+        var(--glass-hue-end)
+    );
+    
+    backdrop-filter: blur(var(--blur-intensity));
+    -webkit-backdrop-filter: blur(var(--blur-intensity));
+    
+    border-radius: 20px;
+    border: 1px solid var(--glass-border-color); /* Theme-aware border */
+    
+    /* Use the theme-aware shadow (optional but good practice) */
+    box-shadow: 0 8px 32px 0 var(--glass-shadow); 
+    
+    height: 60px; 
+}
+.nav-items-wrapper {
+    position: relative; height: 85%;
+    display: flex; justify-content: space-between; align-items: center; padding: 0 7px;
+}
+.nav-item {
+    color: rgba(255,255,255,0.6); font-size: 25px; cursor: pointer;
+    width: 90px; height: 40px; display: flex; justify-content: center; align-items: center;
+}
+.robot-trigger { transform: translateY(-25px); }
+.robot-circle {
+    width: 60px; height: 60px; background: #2F7076F2;
+    border-radius: 50%; border: 5px solid var(--primary);
+    display: flex; justify-content: center; align-items: center;
+    color: var(--primary-dark); font-size: 28px; box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    /* 🟢 APPLY THE THEME-AWARE GLASS EFFECT */
+    background: linear-gradient(
+        135deg, 
+        var(--glass-hue-start), /* Switches between light/dark green glass */
+        var(--glass-hue-end)
+    );
+    backdrop-filter: blur(var(--blur-intensity));
+    -webkit-backdrop-filter: blur(var(--blur-intensity));
+    
+    /* Use the glass border color for the circle's ring */
+    border: 5px solid var(--glass-border-color); 
+    
+    display: flex; 
+    justify-content: center; 
+    align-items: center;
+    
+    /* Use the theme-aware colors for the icon inside the circle */
+    color: var(--primary-dark); 
+    font-size: 28px; 
+    box-shadow: 0 5px 15px var(--glass-shadow);
+}
+
+/* Markers */
+.map-marker { transition: transform 0.2s; cursor: pointer; }
+.map-marker:hover { transform: scale(1.2); z-index: 1000 !important; }
+.marker-dot { width: 30px; height: 30px; background: var(--primary); border: 3px solid white; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); box-shadow: 0 5px 10px rgba(0,0,0,0.3); }
+
+/* Chatbot and Info Views (Full Screen) */
+#chatbot-view, #about-app-view, #about-us-view, #help-view { z-index: 30; background: var(--primary); }
+
+.chat-header {
+    padding: 50px 20px 10px;
+    display: flex;
+    position: relative;
+    align-content: center;
+    flex-direction: column;
+    justify-content: space-around;
+    align-items: flex-end;
+    flex-wrap: wrap;
+}
+.chat-back-btn { position: absolute; right: 20px; background: transparent; border: none; color: white; font-size: 24px; cursor: pointer; }
+.chat-title { color: #bbd9c6; font-size: 30px; font-weight: 600; }
+.chat-body { flex: 1; padding: 20px; text-align: center; overflow-y: auto;}
+.chat-footer { padding: 20px; display: flex; justify-content: center; }
+.chat-input { width: 100%; height: 50px; background: white; border-radius: 30px; border: none; text-align: center; color: var(--primary); font-family: 'Cairo'; font-size: 16px; outline: none; }
+.msg.text-bot { 
+    color: white; font-size: 16px; line-height: 2.4; text-align: right;
+    padding: 0 10px; font-weight: 400; 
+}
+.msg.user { 
+    background:#BBD9C6; color: var(--primary); padding: 10px 20px; border-radius: 20px; 
+    max-width: 80%; display: table; margin-bottom: 10px;
+}
+
+/* --- INFO CONTENT STYLING (for #about-app-view, #about-us-view, #help-view) --- */
+.info-content {
+    color: var(--white);
+    padding: 20px 30px;
+    text-align: right;
+    overflow-y: auto;
+}
+
+.info-subtitle {
+    font-size: 20px;
+    font-weight: 600;
+    margin-bottom: 15px;
+    color: var(--gold); 
+}
+
+.info-content p, .info-content li {
+    font-size: 16px;
+    line-height: 1.6;
+    margin-bottom: 10px;
+    color: #BBD9C6; 
+}
+
+.info-content ul {
+    list-style: none;
+    padding-right: 0;
+    margin-top: 15px;
+}
+
+.info-content ul li {
+    position: relative;
+    padding-right: 15px;
+}
+
+.info-content ul li::before {
+    content: "•";
+    position: absolute;
+    right: 0;
+    color: var(--gold);
+    font-weight: bold;
+}
+
+/* --- MAP UI HIDING WHEN OVERLAY IS ACTIVE --- */
+#map-view.overlay-active .zoom-controls,
+#map-view.overlay-active .location-card,
+#map-view.overlay-active .bottom-nav-container {
+    opacity: 0;
+    pointer-events: none;
+    transform: translateY(100px);
+    transition: opacity 0.3s, transform 0.3s;
+}
+
+/* Base Pin Structure (Shape and Shadow) */
+.custom-marker {
+    position: relative;
+    width: 30px;
+    height: 42px;
+}
+
+.custom-marker .pin-head {
+    width: 30px;
+    height: 30px;
+    border-radius: 50% 50% 50% 0; /* Creates the teardrop shape */
+    transform: rotate(-45deg);
+    position: absolute;
+    top: 0;
+    left: 0;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 3px solid var(--white, #fff); /* White border for visibility */
+}
+
+/* Icon inside the head */
+.custom-marker .pin-head i {
+    transform: rotate(45deg); /* Counter-rotate the icon */
+    font-size: 14px;
+    color: var(--white, #fff);
+}
+
+/* Base colors */
+:root {
+    --teal: #00897b;
+    --gold: #ffc107;
+    --purple: #673ab7;
+    --red: #d32f2f;
+    --white: #ffffff;
+}
+
+/* Category Colors */
+.custom-marker.pin-teal .pin-head {
+    background-color: var(--teal);
+}
+.custom-marker.pin-gold .pin-head {
+    background-color: var(--gold);
+}
+.custom-marker.pin-purple .pin-head {
+    background-color: var(--purple);
+}
+.custom-marker.pin-red .pin-head {
+    background-color: var(--red);
+}
+
+/* Pin Shadow (The spike) */
+.custom-marker .pin-shadow {
+    width: 2px;
+    height: 12px;
+    background: #444; /* Dark shadow color */
+    position: absolute;
+    top: 30px;
+    left: 14px; /* Center the spike */
+    border-radius: 0 0 50% 50%;
+}
+/* Find this block: */
+#settingsList li {
+    /* Remove or comment out the display: flex, justify-content: space-between, and align-items: center */
+    padding: 15px 10px; 
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    font-size: 20px; 
+    /* display: flex;  <-- REMOVE */
+    /* justify-content: space-between; <-- REMOVE */
+    /* align-items: center; <-- REMOVE */
+    cursor: pointer;
+    color: var(--teal-light); 
+}
+
+/* Add the layout properties to the new full-width label */
+.switch-label {
+    display: flex; /* 🟢 FIX: Make the label the container for layout */
+    justify-content: space-between;
+    align-items: flex end;
+    width: 100%; /* Ensure it spans the full width of the list item */
+    padding: 15px 1px; /* Copy padding from li for a click target */
+    margin: -15px -1px; /* Negative margin to pull it out to the li boundary */
+}
+/* You may need to adjust the padding/margin combination slightly to fit perfectly */
+
+.toggle-container {
+    position: relative;
+    display: inline-block;
+    width: 50px; /* Width of the entire track */
+    height: 28px; /* Height of the entire track */
+    margin-right: 10px; /* Space between label and switch */
+}
+
+/* Hide the default browser checkbox */
+.switch-input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+}
+
+/* The actual slider (track) */
+.slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc; /* Off state color */
+    transition: 0.4s;
+    border-radius: 28px;
+}
+
+/* The handle (thumb) */
+.slider:before {
+    position: absolute;
+    content: "";
+    height: 20px;
+    width: 20px;
+    left: 4px;
+    bottom: 4px;
+    background-color: white;
+    transition: 0.4s;
+    border-radius: 50%;
+}
+
+/* When the checkbox is checked (ON state) */
+.switch-input:checked + .slider {
+    background-color: var(--primary); /* Use your primary color for ON state */
+}
+
+/* Move the handle to the right for the ON state */
+.switch-input:checked + .slider:before {
+    transform: translateX(22px); /* 50px width - 4px padding - 20px handle = 26px max travel */
+}
+
+/* Round the corners of the slider track */
+.slider.round {
+    border-radius: 28px;
+}
+.slider.round:before {
+    border-radius: 50%;
+}
+
+/* 🌙 THEME DEPENDENT SLIDER COLOR FIX */
+/* When the whole frame is dark-theme, adjust the OFF state color */
+.phone-frame.dark-theme .slider {
+    background-color: #555;
+}
+/* --- 🟢 NEW CSS: Search Row & Drawer --- */
+
+/* 1. Layout for Search Bar + Button */
+.search-row {
+    display: flex;
+    align-items: center;
+    gap: 18px;
+    width: 100%;
+    position: relative;
+    z-index: 55; /* Ensure it stays above map */
+}
+
+/* Make search bar flexible to fit */
+.top-search-bar {
+    flex: 1; 
+    /* Ensure it doesn't collapse */
+    min-width: 0; 
+}
+
+/* 2. The Toggle Button Style */
+.filter-toggle-btn {
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    border: none;
+    background: white;
+    color: var(--primary);
+    font-size: 20px;
+    cursor: pointer;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    flex-shrink: 0; /* Don't let it shrink */
+    pointer-events: auto; /* Ensure it's clickable */
+}
+
+.filter-toggle-btn.active {
+    background: var(--primary);
+    color: white;
+    transform: rotate(180deg);
+}
+
+/* Dark Mode Styling */
+.phone-frame.dark-theme .filter-toggle-btn {
+    background: rgba(52, 70, 65, 0.8);
+    color: var(--accent);
+    border: 1px solid var(--glass-border-color);
+}
+.phone-frame.dark-theme .filter-toggle-btn.active {
+    background: var(--primary);
+    color: white;
+}
+
+/* 3. The Drawer Animation */
+.filter-drawer {
+    max-height: 0;
+    opacity: 0;
+    overflow: hidden;
+    margin-top: 0;
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Critical: ensure it sits on top of map */
+    position: relative;
+    z-index: 50;
+    pointer-events:auto; 
+}
+
+.filter-drawer.open {
+    max-height: 80px; /* Open height */
+    opacity: 1;
+    margin-top: 10px;
+}
+
+/* 4. Chip Styling */
+.filter-scroll-container {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+    padding: 15px 15px 15px 15px;
+    -ms-overflow-style: none; 
+    scrollbar-width: none; 
+}
+.filter-scroll-container::-webkit-scrollbar { display: none; }
+
+.filter-chip {
+    background: white;
+    color: var(--primary);
+    border: none;
+    padding: 8px 16px;
+    border-radius: 20px;
+    white-space: nowrap;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    box-shadow: 0 3px 8px rgba(0,0,0,0.1);
+    transition: 0.2s;
+    display: flex; align-items: center; gap: 8px;
+}
+
+.filter-chip.active {
+    background: var(--primary);
+    color: white;
+}
+
+.phone-frame.dark-theme .filter-chip {
+    background: rgba(255,255,255,0.1);
+    color: var(--accent);
+}
+.phone-frame.dark-theme .filter-chip.active {
+    background: var(--primary);
+    color: white;
+}
+/* Target the scrollable area (the chat body) */
+#chatContainer {
+    /* ... existing styles ... */
+    overflow-y: auto; /* Ensure vertical scrolling is enabled */
+}
+
+/* 1. Target the entire scrollbar */
+#chatContainer::-webkit-scrollbar {
+    width: 8px; /* Width for vertical scrollbar */
+}
+
+/* 2. Target the track (the background area) */
+#chatContainer::-webkit-scrollbar-track {
+    background: transparent; /* Makes the track invisible or transparent */
+}
+
+/* 3. Target the scrollbar thumb (the movable handle) */
+#chatContainer::-webkit-scrollbar-thumb {
+    background-color: #BBD9C6; /* Light green color */
+    border-radius: 20px;       /* Rounded corners */
+    border: 2px solid var(--primary); /* Optional: thin border around the thumb */
+}
+
+/* 4. Target the thumb when hovered */
+#chatContainer::-webkit-scrollbar-thumb:hover {
+    background-color: #8FD1A7; /* Slightly darker green on hover */
+}
+.chat-back-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1.4rem;
+    cursor: pointer;
+    padding: 0 10px;
+    order: 2; /* For RTL: Button on the right */
+}
+
+.chat-title {
+    flex-grow: 1;
+    font-size: 1.2rem;
+    font-weight: 600;
+    margin: 0;
+    text-align: right; 
+    order: 1; 
+}
+#chatContainer {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 15px;
+    display: flex;
+    flex-direction: column;
+    direction: rtl; 
+    padding-bottom: 75px; 
+}
+.msg {
+    max-width: 85%; 
+    padding: 12px 16px; 
+    border-radius: 20px; 
+    margin-bottom: 8px; 
+    line-height: 1.4;
+    word-wrap: break-word;
+    font-size: 0.95rem; 
+    transition: all 0.2s ease-out;
+    box-shadow: 0 1px 1px rgba(0, 0, 0, 0.05);
+        text-align: left;
+}
+
+/* User Messages (Aligned Right/Start, Modern Shape/Color) */
+.msg.user {
+    /* Aligns to the LEFT side (the end in RTL) */
+    margin-inline-start: 0; 
+    margin-inline-end: auto;
+    
+    background-color: var(--color-primary-dark, #00796b); 
+    color: white;
+    border-top-left-radius: 24px;
+    /* Small corner on the side away from the content (LEFT side) */ 
+    border-bottom-left-radius: 24px; 
+    /* Ensure right side defaults back to the base 20px radius */
+    border-top-right-radius: 1px;
+    border-bottom-right-radius: 24px;
+}
+.msg.text-bot {
+    /* Aligns to the RIGHT side (the start in RTL) */
+    margin-inline-end: 0;
+    margin-inline-start: auto;
+    
+
+    
+    /* Small corner on the side away from the content (RIGHT side) */
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: 18px; 
+    /* Ensure left side defaults back to the base 20px radius */
+    border-top-left-radius: 20px;
+    border-bottom-left-radius: 20px;
+}
+
+
+#chatSendBtn {
+    /* Slightly increased size for better touch target */
+    width: 45px; 
+    height: 45px;
+    border: none;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+    background-color: var(--color-primary-teal, #009688);
+    color: white;
+    /* More pronounced shadow for a floating effect */
+    box-shadow: 0 4px 10px rgba(0, 150, 136, 0.4); 
+    transition: background-color 0.2s ease, transform 0.1s ease, box-shadow 0.2s ease;
+}
+#chatInput {
+    flex-grow: 1;
+    padding: 12px 18px; 
+    border: 1px solid var(--color-border-soft, #CCC); 
+    border-radius: 25px;
+    background-color: var(--color-background-input, #FFF);
+    color: var(--search-bg);
+    font-size: 1rem;
+    text-align: right; 
+    /* Increased margin for better separation from the send button */
+    margin-inline-end: 12px; 
+    transition: border-color 0.2s;
+}
+
+#chatInput:focus {
+    outline: none;
+    border-color: var(--color-primary-teal, #009688); 
+    box-shadow: 0 0 0 1px var(--color-primary-teal, #009688);
+}
+#chatSendBtn:hover {
+    background-color: #00897b;
+    /* Subtle "lift" on hover */
+    box-shadow: 0 6px 15px rgba(0, 150, 136, 0.5); 
+}
+
+#chatSendBtn:active {
+    /* Clear indication of press */
+    transform: scale(0.92); 
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+}
+.msg .typing-dot {
+    display: inline-block;
+    width: 8px;
+    height: 8px;
+    margin: 0 1px;
+    border-radius: 50%;
+    background-color: var(--color-text-secondary,white ); 
+    opacity: 0.5;
+    animation: typing-bounce 1.4s infinite ease-in-out;
+}
+
+.msg .typing-dot:nth-child(1) { animation-delay: -0.32s; }
+.msg .typing-dot:nth-child(2) { animation-delay: -0.16s; }
+.msg .typing-dot:nth-child(3) { animation-delay: 0s; }
+
+@keyframes typing-bounce {
+    0%, 80%, 100% { transform: translateY(0); opacity: 0.5; }
+    40% { transform: translateY(-8px); opacity: 1; }
+}
+/* * Apply the custom scrollbar to ALL potential scroller elements:
+ * .panel-content, #searchResultsList, and #favoritesList.
+ */
+
+/* 1. Target the entire scrollbar */
+.panel-content::-webkit-scrollbar,
+#searchResultsList::-webkit-scrollbar,
+#favoritesList::-webkit-scrollbar {
+    width: 8px; /* Width for vertical scrollbar */
+}
+
+/* 2. Target the track (the background area) */
+.panel-content::-webkit-scrollbar-track,
+#searchResultsList::-webkit-scrollbar-track,
+#favoritesList::-webkit-scrollbar-track {
+    background: transparent; /* Makes the track invisible */
+}
+
+/* 3. Target the scrollbar thumb (the movable handle) */
+.panel-content::-webkit-scrollbar-thumb,
+#searchResultsList::-webkit-scrollbar-thumb,
+#favoritesList::-webkit-scrollbar-thumb {
+    /* Using your requested light color: #BBD9C6 (which is --teal) */
+    background-color: #BBD9C6;
+    border-radius: 20px;
+    /* FIX: Using the correct variable --primary for the border, matching chat style */
+    border: 2px solid var(--primary); 
+}
+
+/* Optional: Darken the thumb slightly on hover */
+.panel-content::-webkit-scrollbar-thumb:hover,
+#searchResultsList::-webkit-scrollbar-thumb:hover,
+#favoritesList::-webkit-scrollbar-thumb:hover {
+    background-color: #a4c9b3; /* Slightly darker shade */
+}
+
+/* Firefox Scrollbar Support */
+#searchResultsList,
+#favoritesList,
+.panel-content {
+    scrollbar-width: thin; 
+    scrollbar-color: #BBD9C6 transparent;
+}
+/* ================================================= */
+/* IMPROVED STYLING FOR QUICK REPLIES */
+/* ================================================= */
+
+.quick-replies-container {
+    display: flex;
+    flex-wrap: wrap;
+    /* Explicitly align to the right (flex-start in RTL mode) */
+    justify-content: flex-start; 
+    gap: 10px; /* Slightly increase gap for better separation */
+    padding: 15px 20px; /* Increase vertical padding for breathing room */
+    margin-top: 5px; 
+    margin-bottom: 15px; 
+    direction: rtl; 
+}
+
+.quick-reply-btn {
+    /* Using light teal for background, dark primary for text */
+    background-color: var(--teal); 
+    color: white;
+    
+    /* Add a subtle border using the main primary color for definition */
+    border: 1px solid var(--primary); 
+    padding: 8px 14px; /* Slightly more horizontal padding */
+    border-radius: 20px;
+    font-size: 0.85em; /* Slightly smaller size for 'chip' look */
+    font-weight: 600; /* Bolder text for better readability */
+    cursor: pointer;
+    
+    /* Use the defined bezier for smoother, professional transitions */
+    transition: all 0.2s var(--bezier); 
+    
+    /* Subtle shadow for visual depth */
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); 
+}
+
+.quick-reply-btn:hover,
+.quick-reply-btn:focus {
+    /* Darken background significantly on interaction */
+    background-color: var(--primary-dark); 
+    color: var(--white); /* Switch text color to white for contrast */
+    
+    /* Lift effect: moves button up 1px and increases shadow depth */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); 
+    transform: translateY(-1px); 
+    outline: none; /* Remove default browser focus outline */
+}
+
+/* ================================================= */
+/* 🚀 NEW FEATURE: DIRECTION / NAVIGATION STYLES */
+/* ================================================= */
+
+.direction-fab {
+    position: absolute;
+    bottom: 120px; /* Align with zoom controls vertical area */
+    right: 20px;   /* Opposite side of zoom controls */
+    width: 50px;
+    height: 50px;
+    background: var(--gold); /* Use gold to make it a primary action */
+    color: var(--primary-dark);
+    border: none;
+    border-radius: 50%;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+    font-size: 20px;
+    cursor: pointer;
+    z-index: 30;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    transition: transform 0.2s, box-shadow 0.2s;
+}
+
+.direction-fab:active {
+    transform: scale(0.9);
+}
+
+.direction-card {
+    position: absolute;
+    top: 130px; /* Below the top search bar */
+    left: 20px;
+    right: 20px;
+    background: var(--white);
+    border-radius: 20px;
+    padding: 20px;
+    z-index: 99; /* Higher than map, lower than overlays */
+    box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    transform-origin: top center;
+}
+
+.direction-card.hidden {
+    opacity: 0;
+    transform: scale(0.95) translateY(-10px);
+    pointer-events: none;
+    visibility: hidden; /* Ensure it doesn't block clicks when hidden */
+}
+
+.dir-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.dir-card-header h3 {
+    margin: 0;
+    font-size: 18px;
+    color: var(--primary);
+}
+
+.close-dir {
+    background: none;
+    border: none;
+    color: #999;
+    font-size: 18px;
+    cursor: pointer;
+    padding: 5px;
+}
+
+.dir-body {
+    display: flex;
+    flex-direction: column;
+    gap: 0; /* Gap handled by dir-dots */
+}
+
+.dir-input-group {
+    display: flex;
+    align-items: center;
+    background: var(--bg);
+    border-radius: 12px;
+    padding: 5px 10px;
+    border: 1px solid transparent;
+    transition: border-color 0.2s;
+}
+
+.dir-input-group:focus-within {
+    border-color: var(--primary);
+}
+
+/* Icons for Start/End */
+.dir-icon {
+    width: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 14px;
+}
+.start-icon { color: #4CAF50; } /* Green for start */
+.end-icon { color: #F44336; }   /* Red for end */
+
+.dir-input-group input {
+    flex: 1;
+    background: transparent;
+    border: none;
+    padding: 10px;
+    font-family: 'Cairo', sans-serif;
+    font-size: 14px;
+    color: var(--primary-dark);
+    outline: none;
+}
+
+/* The vertical dots connecting the inputs */
+.dir-dots {
+    flex-direction: column;
+    align-items: flex-start; /* Align with the icons */
+    gap: 10px;
+    margin: 10px 0; /* Pull inputs closer */
+    z-index: 1;
+}
+
+.dir-dots span {
+    width: 3px;
+    height: 3px;
+    background: #ccc;
+    border-radius: 50%;
+}
+
+.btn-start-nav {
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 12px;
+    padding: 12px;
+    font-family: 'Cairo', sans-serif;
+    font-weight: 700;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    transition: background 0.2s;
+}
+
+.btn-start-nav:hover {
+    background: var(--primary-dark);
+}
+
+/* Dark Theme Adjustments for Direction Card */
+.phone-frame.dark-theme .direction-card {
+    background: rgba(32, 51, 45, 0.95); /* Matches panel-bg */
+    border: 1px solid rgba(255,255,255,0.1);
+}
+
+.phone-frame.dark-theme .dir-card-header h3 {
+    color: var(--gold);
+}
+
+.phone-frame.dark-theme .dir-input-group {
+    background: rgba(0,0,0,0.2);
+}
+
+.phone-frame.dark-theme .dir-input-group input {
+    color: var(--white);
+}
+
+.phone-frame.dark-theme .direction-fab {
+    background: var(--gold);
+    color: #20332D; /* Dark text on gold button */
+}
