@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Uni-Map Ultra Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Concert+One&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+    <link rel="stylesheet" href="../uni2.css">
+</head>
+<body>
+
+    <div class="phone-frame">
+        <div class="notch"></div>
+        <div class="status-bar" id="statusBar">
+            <span id="clock">12:30</span>
+            <div class="icons">
+                <i class="fa-solid fa-wifi"></i>
+                <i class="fa-solid fa-battery-full" style="margin-right: 8px;"></i>
+            </div>
+        </div>
+
+        <div id="home-view" class="view">
+            <div class="hero-header">
+                <div class="pin-assembly">
+                    <div class="pin-body">
+                        <div class="pin-icon">
+                            <img src="../pictures/acb0d467281aa09bb36fe795ad7a246f6549b40f.png" alt="Logo" class="custom-img-logo" onerror="this.style.display='none';this.parentNode.innerHTML='<i class=\'fa-solid fa-graduation-cap\'></i>'">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="home-content">
+                <h1 class="app-title">Uni-Map</h1>
+                <p class="tagline">جامعتك ... في خريطة واحدة</p>
+                <button class="btn-main btn-teal" onclick="navTo('map')">
+                    <span style="color: white;">الخريطة </span>
+                    <i class="fa-solid fa-location-dot"></i>
+                </button>
+                <button class="btn-main btn-gold" onclick="navTo('chat')">
+                    <span style="color: white;text-align: center;">المساعد الذكي </span>
+                    <i class="fa-solid fa-wand-magic-sparkles"></i>
+                </button>
+            </div>
+        </div>
+
+        <div id="map-view" class="view hidden-down">
+            
+            <div class="map-header-bg"></div>
+
+            <div class="top-bar-container">
+                <div class="search-row">
+                    <div class="top-search-bar" id="searchBarUI">
+                        <i class="fa-solid fa-bars menu-icon" onclick="openOverlay('settings')"></i>
+                        <input type="text" placeholder="ابحث عن قاعة، مخبر..." id="mapSearch" oninput="handleSearch(this.value)" onfocus="openOverlay('search')">
+                    </div>
+                    
+                    <button class="filter-toggle-btn" id="filterToggleBtn" onclick="toggleFilterDrawer()">
+                        <i class="fa-solid fa-sliders"></i>
+                    </button>
+                </div>
+
+                <div class="filter-drawer" id="filterDrawer">
+                    <div class="filter-scroll-container">
+                        <button class="filter-chip active" onclick="filterMap('all', this)">
+                            <i class="fa-solid fa-layer-group"></i> الكل
+                        </button>
+                        <button class="filter-chip" onclick="filterMap('locationType_Faculty', this)">
+                            <i class="fa-solid fa-building-columns"></i> كليات
+                        </button>
+                        <button class="filter-chip" onclick="filterMap('locationType_Service', this)">
+                            <i class="fa-solid fa-handshake-angle"></i> خدمات
+                        </button>
+                        <button class="filter-chip" onclick="filterMap('locationType_Admin', this)">
+                            <i class="fa-solid fa-sitemap"></i> إدارة
+                        </button>
+                        <button class="filter-chip" onclick="filterMap('locationType_Lab', this)">
+                            <i class="fa-solid fa-flask"></i> قاعات
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <div class="zoom-controls">
+                <button class="zoom-btn" onclick="zoomMap(1)" aria-label="Zoom In">
+                    <i class="fa-solid fa-plus"></i>
+                </button>
+                <button class="zoom-btn" onclick="zoomMap(-1)" aria-label="Zoom Out">
+                    <i class="fa-solid fa-minus"></i>
+                </button>
+            </div>
+
+            <!-- NEW: Direction Button -->
+            <button class="direction-fab" onclick="toggleDirectionCard()" aria-label="Directions">
+                <i class="fa-solid fa-diamond-turn-right"></i>
+            </button>
+
+            <div id="mapContainer"></div>
+
+            <!-- NEW: Direction Input Card -->
+            <div class="direction-card hidden" id="directionCard">
+                <div class="dir-card-header">
+                    <h3>الاتجاهات</h3>
+                    <button class="close-dir" onclick="closeDirectionCard()"><i class="fa-solid fa-xmark"></i></button>
+                </div>
+                <div class="dir-body">
+                    <div class="dir-input-group">
+                        <div class="dir-icon start-icon"><i class="fa-solid fa-circle-dot"></i></div>
+                        <input 
+    type="text" 
+    id="dirFromInput" 
+    placeholder="موقعي الحالي" 
+    list="destinationsList" 
+    onfocus="if(this.value === 'موقعي الحالي' || this.value === 'My Location' || this.value === 'Ma Position') { this.value = ''; }" 
+    onblur="if(this.value === '') { this.value = 'موقعي الحالي'; }"
+>
+                    </div>
+                    <div class="dir-dots">
+                        <span></span><span></span><span></span>
+                    </div>
+                    <div class="dir-input-group">
+                        <div class="dir-icon end-icon"><i class="fa-solid fa-location-dot"></i></div>
+                        <input type="text" id="dirToInput" placeholder="إلى أين تريد الذهاب؟" list="destinationsList">
+                        <!-- Data list can be populated by JS -->
+                        <datalist id="destinationsList"></datalist>
+                    </div>
+                </div>
+                <button class="btn-start-nav" onclick="startNavigation()">
+                    <span>ابدأ المسار</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
+
+            <div class="overlay-panel" id="searchOverlay">
+                <div class="panel-handle"></div>
+                <div class="panel-content">
+                    <h3 class="panel-title">نتائج البحث</h3>
+                    <div id="searchResultsList" class="results-list">
+                        <div class="empty-state">جاري تحميل القائمة...</div>
+                    </div>
+                </div>
+                <div class="close-orb-container" onclick="closeOverlays()">
+                    <div class="close-orb"><i class="fa-solid fa-xmark"></i></div>
+                </div>
+            </div>
+
+            <div class="overlay-panel" id="favoritesOverlay">
+                <div class="panel-handle"></div>
+                <div class="panel-content center-content">
+                    <h2 class="panel-big-title">قائمتي المفضلة</h2>
+                    <div id="favoritesList" class="fav-grid">
+                        </div>
+                </div>
+                <div class="close-orb-container" onclick="closeOverlays()">
+                    <div class="close-orb"><i class="fa-regular fa-map"></i></div>
+                </div>
+            </div>
+
+            <div class="overlay-panel" id="settingsOverlay">
+                <div class="panel-handle"></div>
+                <div class="panel-content center-content">
+                    <h2 class="panel-big-title">الإعدادات</h2>
+                    
+                    <div class="language-options-container hidden-right" id="languageOptions">
+                        <button class="chat-back-btn" onclick="closeLanguageOptions()" aria-label="Back to Settings">
+                            <i class="fa-solid fa-arrow-right"></i>
+                        </button>
+                        <h2 class="panel-big-title" style="margin-top: 50px;">اللغة</h2>
+                        
+                        <div style="display: flex; flex-direction: column; gap: 15px; padding: 20px;">
+                            <button class="btn-main btn-teal" onclick="setLanguage('ar'); closeLanguageOptions()">العربية</button>
+                            <button class="btn-main btn-teal" onclick="setLanguage('en'); closeLanguageOptions()">English</button>
+                            <button class="btn-main btn-teal" onclick="setLanguage('fr'); closeLanguageOptions()">Français</button>
+                        </div>
+                    </div>
+
+                    <ul class="settings-list" id="settingsList">
+                        <li onclick="openLanguageOptions()">
+                            <span>اللغة</span> <i class="fa-solid fa-chevron-left"></i>
+                        </li>
+                        <li id="themeSettingItem">
+                            <label class="switch-label" for="themeToggle">
+                                <span>Theme: Light / Dark</span>
+                                <div class="toggle-container">
+                                    <input type="checkbox" id="themeToggle" class="switch-input">
+                                    <span class="slider round"></span>
+                                </div>
+                            </label>
+                        </li>
+                        <li onclick="handleSettingsNav('aboutApp')">
+                            <span>حول التطبيق</span> <i class="fa-solid fa-chevron-left"></i>
+                        </li>
+                        <li onclick="handleSettingsNav('aboutUs')">
+                            <span>حولنا</span> <i class="fa-solid fa-chevron-left"></i>
+                        </l>
+                        <li onclick="handleSettingsNav('help')">
+                            <span>المساعدة والدعم</span> <i class="fa-solid fa-chevron-left"></i>
+                        </li>
+
+                    </ul>
+                </div>
+                <div class="close-orb-container" onclick="closeOverlays()">
+                    <div class="close-orb"><i class="fa-regular fa-map"></i></div>
+                </div>
+            </div>
+
+            <div class="location-card" id="locationCard">
+                <div class="card-image-area" id="locImage">
+                    <i class="fa-solid fa-image"></i>
+                </div>
+                <div class="card-body">
+                    <div class="card-header">
+                        <div>
+                            <div class="card-title" id="locTitle">Title</div>
+                            <div class="card-meta" id="locDesc">Description</div>
+                        </div>
+                        <button id="btnFavorite" class="btn-fav-toggle" onclick="toggleFavorite()">
+                            <i class="fa-regular fa-bookmark"></i>
+                        </button>
+                    </div>
+                    <button class="btn-navigate" onclick="closeLocationCard()">
+                        <i class="fa-solid fa-check"></i> حسناً
+                    </button>
+                </div>
+            </div>
+
+            <div class="bottom-nav-container">
+                <div class="bottom-nav-bg"></div>
+                <div class="nav-items-wrapper">
+                    <div class="nav-item" onclick="openOverlay('settings')">
+                        <i class="fa-solid fa-gear"></i>
+                    </div>
+                    <div class="nav-item" onclick="openOverlay('favorites')">
+                        <i class="fa-solid fa-bookmark"></i>
+                    </div>
+                    <div class="nav-item robot-trigger" onclick="navTo('chat')">
+                        <div class="robot-circle"><i class="fa-solid fa-robot" aria-hidden="true"></i></div>
+                    </div>
+                    <div class="nav-item" onclick="openOverlay('search')">
+                        <i class="fa-solid fa-border-all"></i>
+                    </div>
+                    <div class="nav-item active" onclick="navTo('map')">
+                        <div class="icon-circle"><i class="fa-solid fa-house"></i></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <div id="chatbot-view" class="view hidden-down">
+
+            <div class="chat-header">
+                <button class="chat-back-btn" onclick="navTo('map')"> <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <h2 class="chat-title">المساعد الذكي</h2>
+            </div>
+
+            <div class="chat-body" id="chatContainer">
+            <div class="msg text-bot">مرحباً! أنا مساعدك الذكي. اسألني عن أي مكان في الجامعة (مثل: المكتبة، الإدارة...).</div>
+            
+            <div class="quick-replies-container">
+                <button class="quick-reply-btn" data-lang-key="chatReply1" onclick="sendQuickReply('Faculty of Science')">
+                    كلية العلوم
+                </button>
+                <button class="quick-reply-btn" data-lang-key="chatReply2" onclick="sendQuickReply('Central Library')">
+                    المكتبة المركزية
+                </button>
+                <button class="quick-reply-btn" data-lang-key="chatReply3" onclick="sendQuickReply('Lecture Hall A')">
+                    قاعة المحاضرات A
+                </button>
+            </div>
+            </div>
+
+            <div id="chatInputContainer" class="chat-footer">
+                <input 
+                    type="text" 
+                    class="chat-input" 
+                    id="chatInput" 
+                    placeholder="اكتب سؤالك هنا..."
+                    dir="auto"
+                >
+                
+                <button id="chatSendBtn" onclick="sendMessage()">
+                    <i class="fa-solid fa-paper-plane"></i>
+                </button>
+            </div>
+
+        </div>
+        <div id="about-app-view" class="view hidden-down">
+            <div class="chat-header">
+                <button class="chat-back-btn" onclick="navTo('map')">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <h2 class="chat-title">حول التطبيق</h2>
+            </div>
+            <div class="panel-content info-content">
+                <h3 class="info-subtitle">Uni-Map Pro v1.0</h3>
+                <p>تطبيق الخريطة الذكية لجامعة XYZ.</p>
+                <p>يهدف إلى مساعدة الطلاب والموظفين في تحديد مواقع الكليات، المخابر، والمرافق الأخرى بسهولة ويسر.</p>
+            </div>
+        </div>
+
+        <div id="about-us-view" class="view hidden-down">
+            <div class="chat-header">
+                <button class="chat-back-btn" onclick="navTo('map')">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <h2 class="chat-title">حولنا</h2>
+            </div>
+            <div class="panel-content info-content">
+                <h3 class="info-subtitle">فريق العمل (للمنافسة)</h3>
+                <p>هذا المشروع مقدم من فريق [اسم فريقك] ضمن مسابقة [اسم المسابقة].</p>
+                <p>نتمنى أن يحوز عملنا على إعجابكم. تواصلوا معنا عبر: [إيميل/حساب].</p>
+            </div>
+        </div>
+
+        <div id="help-view" class="view hidden-down">
+            <div class="chat-header">
+                <button class="chat-back-btn" onclick="navTo('map')">
+                    <i class="fa-solid fa-arrow-right"></i>
+                </button>
+                <h2 class="chat-title">المساعدة والدعم</h2>
+            </div>
+            <div class="panel-content info-content">
+                <h3 class="info-subtitle">كيفية استخدام الخريطة</h3>
+                <ul>
+                    <li>**الخريطة الرئيسية:** اضغط على أيقونة المبنى لعرض تفاصيله .</li>
+                    <li>**التصنيفات:** استخدم قسم التصنيفات لتصفية المباني المعروضة.</li>
+                    <li>**البحث:** ابحث باسم القاعة أو رقمها في الشريط العلوي**عييت**.</li>
+                </ul>
+            </div>
+        </div>
+        
+    </div>
+
+    <script src="../uni2.js"></script>
+</body>
+
+</html>
